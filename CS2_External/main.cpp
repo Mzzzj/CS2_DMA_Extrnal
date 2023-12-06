@@ -56,9 +56,9 @@ int main()
 		try
 		{
 			//µ¥»ú
-			Gui.AttachAnotherWindow("Counter-Strike 2", "SDL_app", Cheats::Run);
+			//Gui.AttachAnotherWindow("Counter-Strike 2", "SDL_app", Cheats::Run);
 			//Ë«»÷Í¶ÆÁ
-			//Gui.AttachAnotherWindow("Moonlight", "SDL_app", Cheats::Run);
+			Gui.AttachAnotherWindow("Moonlight", "SDL_app", Cheats::Run);
 		}
 		catch (OSImGui::OSException& e)
 		{

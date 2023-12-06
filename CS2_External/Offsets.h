@@ -5,13 +5,13 @@
 // From: https://github.com/a2x/cs2-dumper/blob/main/generated/client.dll.hpp
 namespace Offset
 {
-	inline DWORD EntityList = 0x17BB470;
-	inline DWORD Matrix = 0x1819C10;
+	inline DWORD EntityList = 0x17BB5B0;
+	inline DWORD Matrix = 0x1819D40;
 	inline DWORD ViewAngle = 0x187A8C0;
-	inline DWORD LocalPlayerController = 0x180A8F0;
-	inline DWORD LocalPlayerPawn = 0x16C29E8;
-	inline DWORD ForceJump = 0x16BBE50;
-	inline DWORD GlobalVars = 0x16B7AB0;
+	inline DWORD LocalPlayerController = 0x180AA20;
+	inline DWORD LocalPlayerPawn = 0x16C2B18;
+	inline DWORD ForceJump = 0x16BBF80;
+	inline DWORD GlobalVars = 0x16B7BE0;
 
 	struct
 	{
@@ -41,7 +41,7 @@ namespace Offset
 		DWORD CameraServices = 0x10E0;
 		DWORD iFovStart = 0x214;
 		DWORD fFlags = 0x3C8;
-		DWORD bSpottedByMask = 0x1A38 + 0xC; // entitySpottedState + bSpottedByMask
+		DWORD bSpottedByMask = 0x1630 + 0xC; // entitySpottedState + bSpottedByMask
 	}Pawn;
 
 	struct

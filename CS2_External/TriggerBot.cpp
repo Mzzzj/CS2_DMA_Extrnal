@@ -3,7 +3,7 @@
 void TriggerBot::Run(const CEntity& LocalEntity)
 {
 	DWORD uHandle = 0;
-	if (!ProcessMgr.ReadMemory<DWORD>(LocalEntity.Pawn.Address + Offset::Pawn.iIDEntIndex, uHandle))
+	if (!ProcessMgr.ReadMemory<DWORD>(LocalEntity.Pawn.Address + Offset::iIDEntIndex, uHandle))
 		return;
 	if (uHandle == -1)
 		return;

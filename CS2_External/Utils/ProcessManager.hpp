@@ -55,7 +55,30 @@ public:
 	{
 		LPSTR args[] = { (LPSTR)"",(LPSTR)"-device", (LPSTR)"FPGA" };
 		BOOL hVMM = VMMDLL_Initialize(3, args);
-		VMMDLL_PidGetFromName((LPSTR)ProcessName.c_str(), &ProcessID);
+
+		if (hVMM) {
+			SIZE_T pcPIDs;
+			VMMDLL_PidList(nullptr, &pcPIDs);
+			DWORD* pPIDs = (DWORD*)new char[pcPIDs * 4];
+			VMMDLL_PidList(pPIDs, &pcPIDs);
+			for (int i = 0; i < pcPIDs; i++)
+			{
+				VMMDLL_PROCESS_INFORMATION ProcessInformation = { 0 };
+				ProcessInformation.magic = VMMDLL_PROCESS_INFORMATION_MAGIC;
+				ProcessInformation.wVersion = VMMDLL_PROCESS_INFORMATION_VERSION;
+				SIZE_T pcbProcessInformation = sizeof(VMMDLL_PROCESS_INFORMATION);
+				VMMDLL_ProcessGetInformation(pPIDs[i], &ProcessInformation, &pcbProcessInformation);
+
+
+				if (strcmp(ProcessInformation.szName, "cs2.exe") == 0) {
+					//std::cout << pPIDs[i] << "---" << ProcessInformation.szName << std::endl;  // 输出当前进程的PID和名称
+					ProcessID = pPIDs[i];
+				}
+
+
+			}
+		}
+		//VMMDLL_PidGetFromName((LPSTR)ProcessName.c_str(), &ProcessID);
 		_is_invalid(ProcessID, FAILE_PROCESSID);
 
 		//hProcess = OpenProcess(PROCESS_ALL_ACCESS | PROCESS_CREATE_THREAD, TRUE, ProcessID);

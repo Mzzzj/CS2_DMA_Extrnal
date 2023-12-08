@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+CS2_External/x64/Release/**
+.vs/**

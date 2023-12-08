@@ -2,8 +2,9 @@
 基于 [CS2_Extrnal](https://github.com/TKazer/CS2_External)   的DMA版
 
 ![D7V%LV` TSUF4_%WA HI~UI](https://github.com/MoZiHao/CS2_DMA_Extrnal/assets/31085148/eefea6bf-b10d-49b0-8f21-94aac218d841)
-若你不会编译或需要技术支持请加Q 1067106378
 
+Q 1067106378
+如果不会编译或者更新，可以赞助100，拉你进群，有编译好的可以直接运行，还有更新教程
  ##  JAVA+H5 DMA Radar 单雷达版
  [单雷达版](https://github.com/MoZiHao/CS2_DMA_Radar/tree/main)  
 ![QQ截图20231203124533](https://github.com/MoZiHao/CS2_DMA_Radar/assets/31085148/c99c95c7-a772-47ea-994d-b7a99585c700)

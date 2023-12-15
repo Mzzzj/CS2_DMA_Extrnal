@@ -2,7 +2,7 @@
 基于 [CS2_Extrnal](https://github.com/TKazer/CS2_External)   的DMA版
 
 ![D7V%LV` TSUF4_%WA HI~UI](https://github.com/MoZiHao/CS2_DMA_Extrnal/assets/31085148/eefea6bf-b10d-49b0-8f21-94aac218d841)
-
+已简化基址偏移跟新方式，替换目录中的json文件即可更新
 Q 1067106378
 如果不会编译或者更新，可以赞助100，拉你进群，有编译好的可以直接运行，还有更新教程
  ##  JAVA+H5 DMA Radar 单雷达版

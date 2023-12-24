@@ -86,8 +86,9 @@ namespace OSImGui
         Window.wName = StringToWstring(Window.Name);
         Window.ClassName = "WindowClass";
         Window.wClassName = StringToWstring(Window.ClassName);
+        //Vec2 size = { GetSystemMetrics(SM_CXSCREEN) , GetSystemMetrics(SM_CYSCREEN) };
         Window.Size = WindowSize;
-
+        
         Type = NEW;
         CallBackFn = CallBack;
 
@@ -195,7 +196,8 @@ namespace OSImGui
         }
         else
         {
-            Window.hWnd = CreateWindowW(Window.wClassName.c_str(), Window.wName.c_str(), WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU, (int)Window.Pos.x, (int)Window.Pos.y, (int)Window.Size.x, (int)Window.Size.y, NULL, NULL, wc.hInstance, NULL);
+            Window.BgColor = IM_COL32_BLACK;
+            Window.hWnd = CreateWindowExW(WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW, Window.wClassName.c_str(), Window.wName.c_str(), WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), NULL, NULL, GetModuleHandle(NULL), NULL);
         }
         Window.hInstance = wc.hInstance;
 
@@ -257,6 +259,17 @@ namespace OSImGui
 
         switch (msg)
         {
+        case WM_PAINT:
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hWnd, &ps);
+
+            HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 0));
+            FillRect(hdc, &ps.rcPaint, hBrush);
+
+            EndPaint(hWnd, &ps);
+            break;
+        }
         case WM_CREATE:
         {
             MARGINS     Margin = { -1 };

@@ -68,8 +68,8 @@ int main()
 		char moduleIndox[2];
 		std::cout << "请选择模式: " << std::endl;
 		std::cout << "	[1]单机模式" << std::endl;
-		std::cout << "	[2]双击(Moonlight)模式" << std::endl;
-		std::cout << "	[3]双击自定义附加窗口模式" << std::endl;
+		std::cout << "	[2]双机(Moonlight)模式" << std::endl;
+		std::cout << "	[3]融合器模式" << std::endl;
 		std::cout << "请输入序号: ";
 		std::cin.getline(moduleIndox, 2);
 		std::cout << std::atoi(moduleIndox) << std::endl;
@@ -82,18 +82,20 @@ int main()
 			Gui.AttachAnotherWindow("Moonlight", "SDL_app", Cheats::Run);
 		}
 		if (std::atoi(moduleIndox) == 3) {
-			char inputWindowIndex[10];
-			EnumWindows(EnumWindowProc, NULL);
-			int i = 0;
-			for (auto name = windowNameList.begin(); name != windowNameList.end(); ++name) {
-				std::cout << "[" << i << "]" << *name << std::endl;
-				i++;
-			}
-
-			std::cout << "请选择需要附加的窗口名序号:";
-			std::cin.getline(inputWindowIndex, 10);
-			std::cout << "自定义模式-窗口名:" << windowNameList[std::atoi(inputWindowIndex)] << std::endl;
-			Gui.AttachAnotherWindow(windowNameList[std::atoi(inputWindowIndex)], "SDL_app", Cheats::Run);
+			Vec2 windowSize = Vec2{ 2560,1440 };
+			Gui.NewWindow("GG", windowSize, Cheats::Run);
+			//char inputWindowIndex[10];
+			//EnumWindows(EnumWindowProc, NULL);
+			//int i = 0;
+			//for (auto name = windowNameList.begin(); name != windowNameList.end(); ++name) {
+			//	std::cout << "[" << i << "]" << *name << std::endl;
+			//	i++;
+			//}
+			//
+			//std::cout << "请选择需要附加的窗口名序号:";
+			//std::cin.getline(inputWindowIndex, 10);
+			//std::cout << "自定义模式-窗口名:" << windowNameList[std::atoi(inputWindowIndex)] << std::endl;
+			//Gui.AttachAnotherWindow(windowNameList[std::atoi(inputWindowIndex)], "SDL_app", Cheats::Run);
 		}
 
 	}

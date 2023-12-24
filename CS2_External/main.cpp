@@ -82,20 +82,10 @@ int main()
 			Gui.AttachAnotherWindow("Moonlight", "SDL_app", Cheats::Run);
 		}
 		if (std::atoi(moduleIndox) == 3) {
-			Vec2 windowSize = Vec2{ 2560,1440 };
+			Vec2 windowSize;
+			windowSize.x=GetSystemMetrics(SM_CXSCREEN);
+			windowSize.y = GetSystemMetrics(SM_CYSCREEN);
 			Gui.NewWindow("GG", windowSize, Cheats::Run);
-			//char inputWindowIndex[10];
-			//EnumWindows(EnumWindowProc, NULL);
-			//int i = 0;
-			//for (auto name = windowNameList.begin(); name != windowNameList.end(); ++name) {
-			//	std::cout << "[" << i << "]" << *name << std::endl;
-			//	i++;
-			//}
-			//
-			//std::cout << "请选择需要附加的窗口名序号:";
-			//std::cin.getline(inputWindowIndex, 10);
-			//std::cout << "自定义模式-窗口名:" << windowNameList[std::atoi(inputWindowIndex)] << std::endl;
-			//Gui.AttachAnotherWindow(windowNameList[std::atoi(inputWindowIndex)], "SDL_app", Cheats::Run);
 		}
 
 	}

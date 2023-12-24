@@ -86,7 +86,6 @@ namespace OSImGui
         Window.wName = StringToWstring(Window.Name);
         Window.ClassName = "WindowClass";
         Window.wClassName = StringToWstring(Window.ClassName);
-        //Vec2 size = { GetSystemMetrics(SM_CXSCREEN) , GetSystemMetrics(SM_CYSCREEN) };
         Window.Size = WindowSize;
         
         Type = NEW;

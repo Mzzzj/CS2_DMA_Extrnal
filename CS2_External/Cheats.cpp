@@ -218,28 +218,7 @@ void Cheats::Run()
 	if (MenuConfig::ShowMenu)
 		Menu();
 
-	// Update matrix
-	if (!ProcessMgr.ReadMemory(gGame.GetMatrixAddress(), gGame.View.Matrix, 64))
-		return;
-
-	// Update EntityList Entry
-	gGame.UpdateEntityListEntry();
-
-	DWORD64 LocalControllerAddress = 0;
-	DWORD64 LocalPawnAddress = 0;
-
-	if (!ProcessMgr.ReadMemory(gGame.GetLocalControllerAddress(), LocalControllerAddress))
-		return;
-	if (!ProcessMgr.ReadMemory(gGame.GetLocalPawnAddress(), LocalPawnAddress))
-		return;
-
-	// LocalEntity
-	CEntity LocalEntity;
-	static int LocalPlayerControllerIndex = 1;
-	if (!LocalEntity.UpdateController(LocalControllerAddress))
-		return;
-	if (!LocalEntity.UpdatePawn(LocalPawnAddress))
-		return;
+	
 
 	// HealthBar Map
 	static std::map<DWORD64, Render::HealthBar> HealthBarMap;
@@ -255,47 +234,25 @@ void Cheats::Run()
 	if (MenuConfig::ShowRadar)
 		RadarSetting(Radar);
 
-	for (int i = 0; i < 64; i++)
-	{
-		CEntity Entity;
-		DWORD64 EntityAddress = 0;
-		if (!ProcessMgr.ReadMemory<DWORD64>(gGame.GetEntityListEntry() + (i + 1) * 0x78, EntityAddress))
-			continue;
+	static int LocalPlayerControllerIndex = 1;
 
-		if (EntityAddress == LocalEntity.Controller.Address)
+	for (int i = 0; i < EntityList.size(); i++)
+	{
+		CEntity Entity = EntityList[i];
+		
+		if (Entity.Controller.Address == LocalEntityPlayer.Controller.Address)
 		{
 			LocalPlayerControllerIndex = i;
 			continue;
 		}
-
-		if (!Entity.UpdateController(EntityAddress))
-			continue;
-
-		if (!Entity.UpdatePawn(Entity.Pawn.Address))
-			continue;
-
-		if (MenuConfig::TeamCheck && Entity.Controller.TeamID == LocalEntity.Controller.TeamID)
-			continue;
-
-		if (!Entity.IsAlive())
-			continue;
+		
 
 		// Add entity to radar
 		if (MenuConfig::ShowRadar)
-			Radar.AddPoint(LocalEntity.Pawn.Pos, LocalEntity.Pawn.ViewAngle.y, Entity.Pawn.Pos, ImColor(237, 85, 106, 200), MenuConfig::RadarType, Entity.Pawn.ViewAngle.y);
+			Radar.AddPoint(LocalEntityPlayer.Pawn.Pos, LocalEntityPlayer.Pawn.ViewAngle.y, Entity.Pawn.Pos, ImColor(237, 85, 106, 200), MenuConfig::RadarType, Entity.Pawn.ViewAngle.y);
 
 		if (!Entity.IsInScreen())
 			continue;
-
-		// Bone Debug
-	/*	for (int BoneIndex = 0; BoneIndex < Entity.BoneData.BonePosList.size(); BoneIndex++)
-		{
-			Vec2 ScreenPos{};
-			if (gGame.View.WorldToScreen(Entity.BoneData.BonePosList[BoneIndex].Pos, ScreenPos))
-			{
-				Gui.Text(std::to_string(BoneIndex), ScreenPos, ImColor(255, 255, 255, 255));
-			}
-		}*/
 
 		DistanceToSight = Entity.GetBone().BonePosList[BONEINDEX::head].ScreenPos.DistanceTo({ Gui.Window.Size.x / 2,Gui.Window.Size.y / 2 });
 
@@ -306,7 +263,7 @@ void Cheats::Run()
 			// From: https://github.com/redbg/CS2-Internal/blob/fc8e64430176a62f8800b7467884806708a865bb/src/include/Cheats.hpp#L129
 			if (!MenuConfig::VisibleCheck ||
 				Entity.Pawn.bSpottedByMask & (DWORD64(1) << (LocalPlayerControllerIndex)) ||
-				LocalEntity.Pawn.bSpottedByMask & (DWORD64(1) << (i)))
+				LocalEntityPlayer.Pawn.bSpottedByMask & (DWORD64(1) << (i)))
 			{
 				AimPos = Entity.GetBone().BonePosList[MenuConfig::AimPositionIndex].Pos;
 				if (MenuConfig::AimPositionIndex == BONEINDEX::head)
@@ -360,7 +317,7 @@ void Cheats::Run()
 				HealthBarPos = { Rect.x + Rect.z / 2 - 70 / 2,Rect.y - 13 };
 				HealthBarSize = { 70,8 };
 			}
-			Render::DrawHealthBar(EntityAddress, 100, Entity.Pawn.Health, HealthBarPos, HealthBarSize, MenuConfig::HealthBarType);
+			Render::DrawHealthBar(Entity.Controller.Address, 100, Entity.Pawn.Health, HealthBarPos, HealthBarSize, MenuConfig::HealthBarType);
 		}
 
 		// Draw weaponName
@@ -368,7 +325,7 @@ void Cheats::Run()
 			Gui.StrokeText(Entity.Pawn.WeaponName, { Rect.x,Rect.y + Rect.w }, ImColor(255, 255, 255, 255), 14);
 
 		if (MenuConfig::ShowDistance)
-			Render::DrawDistance(LocalEntity, Entity, Rect);
+			Render::DrawDistance(LocalEntityPlayer, Entity, Rect);
 
 		if (MenuConfig::ShowPlayerName)
 		{
@@ -382,7 +339,7 @@ void Cheats::Run()
 
 	// Fov line
 	if (MenuConfig::ShowFovLine)
-		Render::DrawFov(LocalEntity, MenuConfig::FovLineSize, MenuConfig::FovLineColor, 1);
+		Render::DrawFov(LocalEntityPlayer, MenuConfig::FovLineSize, MenuConfig::FovLineColor, 1);
 
 	// Radar render
 	if (MenuConfig::ShowRadar)
@@ -407,13 +364,13 @@ void Cheats::Run()
 	if (MenuConfig::TriggerMode == 0 && MenuConfig::TriggerBot && GetAsyncKeyState(TriggerBot::HotKey))
 	{
 		MenuConfig::Shoot = true;
-		TriggerBot::Run(LocalEntity);
+		TriggerBot::Run(LocalEntityPlayer);
 		MenuConfig::Shoot = false;
 	}
 	else if (MenuConfig::TriggerMode == 1 && MenuConfig::TriggerBot && MenuConfig::Pressed) 
 	{
 		MenuConfig::Shoot = true;
-		TriggerBot::Run(LocalEntity);
+		TriggerBot::Run(LocalEntityPlayer);
 		MenuConfig::Shoot = false;
 	}
 			
@@ -421,7 +378,7 @@ void Cheats::Run()
 
 	// HeadShoot Line
 	if(MenuConfig::ShowHeadShootLine)
-		Render::HeadShootLine(LocalEntity, MenuConfig::HeadShootLineColor);
+		Render::HeadShootLine(LocalEntityPlayer, MenuConfig::HeadShootLineColor);
 
 	// CrossHair
 	if (MenuConfig::ShowCrossHair)
@@ -429,19 +386,19 @@ void Cheats::Run()
 
 	// Fov circle
 	if(MenuConfig::ShowAimFovRange)
-		Render::DrawFovCircle(LocalEntity);
+		Render::DrawFovCircle(LocalEntityPlayer);
 	
 	if (MenuConfig::BunnyHop)
-		Bunnyhop::Run(LocalEntity);
+		Bunnyhop::Run(LocalEntityPlayer);
 
 	if (MenuConfig::AntiFlashbang)
-		AntiFlashbang::Run(LocalEntity);
+		AntiFlashbang::Run(LocalEntityPlayer);
 
 	if (MenuConfig::AimBot && GetAsyncKeyState(AimControl::HotKey))
 	{
 		if (AimPos != Vec3(0, 0, 0))
 		{
-			AimControl::AimBot(LocalEntity, LocalEntity.Pawn.CameraPos, AimPos);
+			AimControl::AimBot(LocalEntityPlayer, LocalEntityPlayer.Pawn.CameraPos, AimPos);
 		}
 	}
 }

@@ -131,6 +131,9 @@
     </ClInclude>
     <ClInclude Include="AntiFlashbang.hpp" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="CheatsThread.h">
+      <Filter>Cheats</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OS-ImGui\imgui\imgui.cpp">
@@ -198,6 +201,9 @@
     </ClCompile>
     <ClCompile Include="GlobalVars.cpp">
       <Filter>Cheats\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="CheatsThread.cpp">
+      <Filter>Cheats</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

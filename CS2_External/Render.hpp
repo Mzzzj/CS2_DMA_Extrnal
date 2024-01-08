@@ -74,7 +74,6 @@ namespace Render
 	ImVec4 Get2DBox(const CEntity& Entity)
 	{
 		BoneJointPos Head = Entity.GetBone().BonePosList[BONEINDEX::head];
-
 		Vec2 Size, Pos;
 		Size.y = (Entity.Pawn.ScreenPos.y - Head.ScreenPos.y) * 1.09;
 		Size.x = Size.y * 0.6;

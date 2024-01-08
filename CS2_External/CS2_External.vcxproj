@@ -156,6 +156,7 @@
     <ClInclude Include="Bone.h" />
     <ClInclude Include="Aimbot.hpp" />
     <ClInclude Include="Cheats.h" />
+    <ClInclude Include="CheatsThread.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Globals.hpp" />
@@ -188,6 +189,7 @@
   <ItemGroup>
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Cheats.cpp" />
+    <ClCompile Include="CheatsThread.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GlobalVars.cpp" />

@@ -1,6 +1,6 @@
 
-#include "Cheats.h"
 #include "Utils/Format.hpp"
+#include "CheatsThread.h"
 #include <iostream>
 #include <iomanip>
 #include <filesystem>
@@ -62,7 +62,13 @@ int main()
 	}
 
 	std::cout << "Runing..." << std::endl;
+	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(UpdateMatrix), NULL, 0, 0);
 
+	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(LoadLocalEntity), NULL, 0, 0);
+
+	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(LoadEntity), NULL, 0, 0);
+
+	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(UpdateEntityListEntry), NULL, 0, 0);
 	try
 	{
 		char moduleIndox[2];

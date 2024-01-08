@@ -27,7 +27,7 @@ enum StatusCode
 /// <summary>
 /// 进程管理
 /// </summary>
-class ProcessManager 
+class ProcessManager
 {
 private:
 
@@ -131,7 +131,7 @@ public:
 	{
 		//_is_invalid(hProcess,false);
 		_is_invalid(ProcessID, false);
-		if (VMMDLL_MemReadEx(ProcessID, Address, (PBYTE)&Value, Size, 0, VMMDLL_FLAG_NOCACHE))
+		if (VMMDLL_MemReadEx(ProcessID, Address, (PBYTE)&Value, Size, 0, VMMDLL_FLAG_NOCACHE | VMMDLL_FLAG_NOPAGING | VMMDLL_FLAG_ZEROPAD_ON_FAIL | VMMDLL_FLAG_NOPAGING_IO))
 			return true;
 		return false;
 	}
@@ -141,8 +141,8 @@ public:
 	{
 		//_is_invalid(hProcess, false);
 		_is_invalid(ProcessID, false);
-		
-		if (VMMDLL_MemReadEx(ProcessID, Address, (PBYTE)&Value, sizeof(ReadType), 0, VMMDLL_FLAG_NOCACHE))
+
+		if (VMMDLL_MemReadEx(ProcessID, Address, (PBYTE)&Value, sizeof(ReadType), 0, VMMDLL_FLAG_NOCACHE | VMMDLL_FLAG_NOPAGING | VMMDLL_FLAG_ZEROPAD_ON_FAIL | VMMDLL_FLAG_NOPAGING_IO))
 			return true;
 		return false;
 	}
@@ -188,7 +188,7 @@ public:
 	DWORD64 TraceAddress(DWORD64 BaseAddress, std::vector<DWORD> Offsets)
 	{
 		//_is_invalid(hProcess,0);
-		_is_invalid(ProcessID,0);
+		_is_invalid(ProcessID, 0);
 		DWORD64 Address = 0;
 
 		if (Offsets.size() == 0)
@@ -196,7 +196,7 @@ public:
 
 		if (!ReadMemory<DWORD64>(BaseAddress, Address))
 			return 0;
-	
+
 		for (int i = 0; i < Offsets.size() - 1; i++)
 		{
 			if (!ReadMemory<DWORD64>(Address + Offsets[i], Address))

@@ -13,3 +13,6 @@ namespace Cheats
 	void RadarSetting(Base_Radar& Radar);
 	void Run();
 }
+inline CEntity LocalEntityPlayer;
+
+inline std::vector<CEntity> EntityList;

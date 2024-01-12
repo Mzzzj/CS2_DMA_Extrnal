@@ -22,6 +22,7 @@ namespace AimControl
 
 	inline void AimBot(const CEntity& Local, Vec3 LocalPos, Vec3 AimPos)
 	{
+		
 		float Yaw, Pitch;
 		float Distance, Norm;
 		Vec3 OppPos;

@@ -172,7 +172,7 @@ void Cheats::Menu()
 		
 		ImGui::Separator();
 
-		ImGui::Text(u8"[HOME] 隐藏显示，自瞄/自动扳机/屏蔽闪光 高风险功能不建议使用");
+		ImGui::Text(u8"[HOME] 隐藏显示，自瞄/自动扳机/屏蔽闪光 高风险功能不建议使用\n这软件是免费开源的如何你花钱了，说明你被骗了。\nhttps://github.com/Mzzzj/CS2_DMA_Extrnal");
 
 		ImGui::EndTabBar();
 	}ImGui::End();
@@ -234,19 +234,14 @@ void Cheats::Run()
 	if (MenuConfig::ShowRadar)
 		RadarSetting(Radar);
 
-	static int LocalPlayerControllerIndex = 1;
 
 	for (int i = 0; i < EntityList.size(); i++)
 	{
 		CEntity Entity = EntityList[i];
-		
-		if (Entity.Controller.Address == LocalEntityPlayer.Controller.Address)
-		{
-			LocalPlayerControllerIndex = i;
+		if (Entity.Pawn.Health <= 0) {
 			continue;
 		}
 		
-
 		// Add entity to radar
 		if (MenuConfig::ShowRadar)
 			Radar.AddPoint(LocalEntityPlayer.Pawn.Pos, LocalEntityPlayer.Pawn.ViewAngle.y, Entity.Pawn.Pos, ImColor(237, 85, 106, 200), MenuConfig::RadarType, Entity.Pawn.ViewAngle.y);
@@ -262,7 +257,7 @@ void Cheats::Run()
 			MaxAimDistance = DistanceToSight;
 			// From: https://github.com/redbg/CS2-Internal/blob/fc8e64430176a62f8800b7467884806708a865bb/src/include/Cheats.hpp#L129
 			if (!MenuConfig::VisibleCheck ||
-				Entity.Pawn.bSpottedByMask & (DWORD64(1) << (LocalPlayerControllerIndex)) ||
+				Entity.Pawn.bSpottedByMask & (DWORD64(1) << (LocalEntityPlayer.LocalPlayerControllerIndex)) ||
 				LocalEntityPlayer.Pawn.bSpottedByMask & (DWORD64(1) << (i)))
 			{
 				AimPos = Entity.GetBone().BonePosList[MenuConfig::AimPositionIndex].Pos;
@@ -398,6 +393,7 @@ void Cheats::Run()
 	{
 		if (AimPos != Vec3(0, 0, 0))
 		{
+
 			AimControl::AimBot(LocalEntityPlayer, LocalEntityPlayer.Pawn.CameraPos, AimPos);
 		}
 	}

@@ -13,3 +13,7 @@ VOID LoadEntity();
 
 VOID UpdateEntityListEntry();
 
+VOID ScatterReadThreads();
+
+VOID UpdateWeaponNameThreads();
+

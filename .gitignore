@@ -32,3 +32,4 @@
 *.app
 CS2_External/x64/Release/**
 .vs/**
+CS2_External/x64/Debug/**

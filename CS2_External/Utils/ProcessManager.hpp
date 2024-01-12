@@ -53,7 +53,7 @@ public:
 	/// <returns>½ø³Ì×´Ì¬Âë</returns>
 	StatusCode Attach(std::string ProcessName)
 	{
-		LPSTR args[] = { (LPSTR)"",(LPSTR)"-device", (LPSTR)"FPGA" };
+		LPSTR args[] = { (LPSTR)"",(LPSTR)"-device", (LPSTR)"FPGA",(LPSTR)"-norefresh"};
 		BOOL hVMM = VMMDLL_Initialize(3, args);
 
 		if (hVMM) {
@@ -145,6 +145,21 @@ public:
 		if (VMMDLL_MemReadEx(ProcessID, Address, (PBYTE)&Value, sizeof(ReadType), 0, VMMDLL_FLAG_NOCACHE | VMMDLL_FLAG_NOPAGING | VMMDLL_FLAG_ZEROPAD_ON_FAIL | VMMDLL_FLAG_NOPAGING_IO))
 			return true;
 		return false;
+	}
+
+	VMMDLL_SCATTER_HANDLE CreateScatterHandle()
+	{
+		return VMMDLL_Scatter_Initialize(ProcessID, VMMDLL_FLAG_NOCACHE);
+	}
+
+	void AddScatterReadRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t address, void* buffer, size_t size)
+	{
+		VMMDLL_Scatter_PrepareEx(handle, address, size, (PBYTE)buffer, NULL);
+	}
+	void ExecuteReadScatter(VMMDLL_SCATTER_HANDLE handle)
+	{
+		VMMDLL_Scatter_ExecuteRead(handle);
+		VMMDLL_Scatter_Clear(handle, ProcessID, NULL);
 	}
 
 	/// <summary>

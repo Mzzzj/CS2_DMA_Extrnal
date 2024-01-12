@@ -75,6 +75,12 @@ class CEntity
 public:
 	PlayerController Controller;
 	PlayerPawn Pawn;
+	BoneJointData TempBoneArray[30]{};
+	Vec3 TempPos;
+	int TempHealth;
+	int LocalPlayerControllerIndex;
+	Vec2 TempViewAngle;
+	DWORD64 TempbSpottedByMask;
 public:
 	// 更新数据
 	bool UpdateController(const DWORD64& PlayerControllerAddress);

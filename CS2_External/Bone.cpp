@@ -7,16 +7,15 @@ bool CBone::UpdateAllBoneData(const DWORD64& EntityPawnAddress)
 	this->EntityPawnAddress = EntityPawnAddress;
 
 	DWORD64 GameSceneNode = 0;
-	DWORD64 BoneArrayAddress = 0;
 	if (!ProcessMgr.ReadMemory<DWORD64>(EntityPawnAddress + Offset::GameSceneNode, GameSceneNode))
 		return false;
-	if (!ProcessMgr.ReadMemory<DWORD64>(GameSceneNode + Offset::BoneArray, BoneArrayAddress))
+	if (!ProcessMgr.ReadMemory<DWORD64>(GameSceneNode + Offset::BoneArray, this->BoneArrayAddress))
 		return false;
 
 	BoneJointData BoneArray[30]{};
-	if (!ProcessMgr.ReadMemory(BoneArrayAddress, BoneArray, 30 * sizeof(BoneJointData)))
+	if (!ProcessMgr.ReadMemory(this->BoneArrayAddress, BoneArray, 30 * sizeof(BoneJointData)))
 		return false;
-
+	this->BonePosList.clear();
 	for (int i = 0; i < 30; i++)
 	{
 		Vec2 ScreenPos;

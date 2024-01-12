@@ -1,5 +1,6 @@
 #include "CheatsThread.h"
 #include <synchapi.h>
+using namespace Cheats;
 
 
 
@@ -22,26 +23,38 @@ VOID LoadLocalEntity()
 		// LocalEntity
 		DWORD64 LocalControllerAddress = 0;
 		DWORD64 LocalPawnAddress = 0;
-
 		if (!ProcessMgr.ReadMemory(gGame.GetLocalControllerAddress(), LocalControllerAddress))
-			return;
+			continue;
 		if (!ProcessMgr.ReadMemory(gGame.GetLocalPawnAddress(), LocalPawnAddress))
-			return;
+			continue;
+		CEntity LocalPlayer;
+		if (!LocalPlayer.UpdateController(LocalControllerAddress))
+			continue;
+		if (!LocalPlayer.UpdatePawn(LocalPawnAddress))
+			continue;
 
-		
-		if (!LocalEntityPlayer.UpdateController(LocalControllerAddress))
-			return;
-		if (!LocalEntityPlayer.UpdatePawn(LocalPawnAddress))
-			return;
+		LocalEntityPlayer = LocalPlayer;
 	}
 }
 std::vector<CEntity> TempEntityList;
+
+bool isSameCEntity(std::vector<CEntity>list1, std::vector<CEntity>list2) {
+	bool isSame = true;
+	if (list1.size() != list2.size()) {
+		isSame = false;
+	}
+	return isSame;
+}
 VOID UpdatePlayer(int index) {
 	CEntity Entity;
 	DWORD64 EntityAddress = 0;
 	if (!ProcessMgr.ReadMemory<DWORD64>(gGame.GetEntityListEntry() + (index + 1) * 0x78, EntityAddress))
 		return;
-	
+	if (EntityAddress == LocalEntityPlayer.Controller.Address)
+	{
+		LocalEntityPlayer.LocalPlayerControllerIndex = index;
+		return;
+	}
 
 	if (!Entity.UpdateController(EntityAddress))
 		return;
@@ -51,8 +64,6 @@ VOID UpdatePlayer(int index) {
 
 	if (!Entity.UpdatePawn(Entity.Pawn.Address))
 		return;
-
-	
 
 	if (!Entity.IsAlive())
 		return;
@@ -65,7 +76,9 @@ VOID LoadEntity()
 {
 	while (true)
 	{
-		Sleep(1);
+		if (LocalEntityPlayer.Controller.Address==0) {
+			continue;
+		}
 		std::vector<std::thread> threads;
 		TempEntityList.clear();
 		for (int i = 0; i < 64; i++)
@@ -77,7 +90,11 @@ VOID LoadEntity()
 				t.join();
 			}
 		}
-		EntityList = TempEntityList;
+		if (!isSameCEntity(EntityList, TempEntityList)) {
+			EntityList = TempEntityList;
+		}
+
+		Sleep(100);
 	}
 }
 
@@ -85,9 +102,95 @@ VOID UpdateEntityListEntry()
 {
 	while (true)
 	{
-		Sleep(1);
 		// Update EntityList Entry
 		gGame.UpdateEntityListEntry();
+		Sleep(5000);
+	}
+}
+
+VOID UpdateWeaponName(int index) {
+	EntityList[index].Pawn.GetWeaponName();
+}
+VOID UpdateVlue(int index) {
+
+	std::vector<BoneJointPos> BonePosList;
+	for (int i = 0; i < 30; i++)
+	{
+		Vec2 ScreenPos;
+		bool IsVisible = false;
+
+		if (gGame.View.WorldToScreen(EntityList[index].TempBoneArray[i].Pos, ScreenPos))
+			IsVisible = true;
+
+		BonePosList.push_back({ EntityList[index].TempBoneArray[i].Pos ,ScreenPos,IsVisible });
+	}
+	EntityList[index].Pawn.BoneData.BonePosList = BonePosList;
+
+	EntityList[index].Pawn.Pos = EntityList[index].TempPos;
+	EntityList[index].Pawn.Health = EntityList[index].TempHealth;
+	EntityList[index].Pawn.ViewAngle = EntityList[index].TempViewAngle;
+	EntityList[index].Pawn.bSpottedByMask = EntityList[index].TempbSpottedByMask;
+}
+VOID ScatterReadThreads()
+{
+	while (true)
+	{
+		Sleep(1);
+		clock_t start = clock();
+		VMMDLL_SCATTER_HANDLE handle = ProcessMgr.CreateScatterHandle();
+		
+		for (int i = 0; i < EntityList.size(); i++)
+		{
+			//¶Á¹Ç÷À
+
+			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.BoneData.BoneArrayAddress, EntityList[i].TempBoneArray, 30 * sizeof(BoneJointData));
+			//¶ÁÈ¡Î»ÖÃ
+			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address+ Offset::Pos, &EntityList[i].TempPos, sizeof(Vec3));
+			//¶ÁÈ¡ÑªÁ¿
+			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address+ Offset::CurrentHealth, &EntityList[i].TempHealth, sizeof(int));
+			//¶ÁÈ¡ÊÓÒ°
+			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address+ Offset::angEyeAngles, &EntityList[i].TempViewAngle, sizeof(Vec2));
+			//ÑÚÌå¼ì²â
+			ProcessMgr.AddScatterReadRequest(handle, EntityList[i].Pawn.Address+ Offset::bSpottedByMask, &EntityList[i].TempbSpottedByMask, sizeof(DWORD64));
+		}
+		ProcessMgr.ExecuteReadScatter(handle);
+		
+		
+		std::vector<std::thread> threads;
+		for (int i = 0; i < EntityList.size(); i++)
+		{
+			threads.push_back(std::thread(UpdateVlue, i));
+		}
+		for (auto& t : threads) {
+			if (t.joinable()) {
+				t.join();
+			}
+		}
+		clock_t end = clock();
+		//std::cout << end - start << std::endl;
+		
+	}
+
+
+}
+
+VOID UpdateWeaponNameThreads()
+{
+	while (true)
+	{
+		Sleep(100);
+
+		std::vector<std::thread> threads;
+		for (int i = 0; i < EntityList.size(); i++)
+		{
+			threads.push_back(std::thread(UpdateWeaponName, i));
+		}
+		for (auto& t : threads) {
+			if (t.joinable()) {
+				t.join();
+			}
+		}
+
 	}
 }
 

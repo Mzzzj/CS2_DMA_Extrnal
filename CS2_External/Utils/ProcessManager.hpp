@@ -23,6 +23,18 @@ enum StatusCode
 	FAILE_HPROCESS,
 	FAILE_MODULE,
 };
+struct Info
+{
+	uint32_t index;
+	uint32_t process_id;
+	uint64_t dtb;
+	uint64_t kernelAddr;
+	std::string name;
+};
+
+
+
+
 
 /// <summary>
 /// 进程管理
@@ -34,11 +46,10 @@ private:
 	bool   Attached = false;
 
 public:
-
+	std::string AttachProcessName;
 	HANDLE hProcess = 0;
 	DWORD  ProcessID = 0;
-	DWORD64  ModuleAddress = 0;
-
+	VMM_HANDLE HANDLE;
 public:
 	~ProcessManager()
 	{
@@ -53,21 +64,22 @@ public:
 	/// <returns>进程状态码</returns>
 	StatusCode Attach(std::string ProcessName)
 	{
+		this->AttachProcessName = ProcessName;
 		LPSTR args[] = { (LPSTR)"",(LPSTR)"-device", (LPSTR)"FPGA",(LPSTR)"-norefresh"};
-		BOOL hVMM = VMMDLL_Initialize(3, args);
+		this->HANDLE = VMMDLL_Initialize(3, args);
 
-		if (hVMM) {
+		if (this->HANDLE) {
 			SIZE_T pcPIDs;
-			VMMDLL_PidList(nullptr, &pcPIDs);
+			VMMDLL_PidList(this->HANDLE,nullptr, &pcPIDs);
 			DWORD* pPIDs = (DWORD*)new char[pcPIDs * 4];
-			VMMDLL_PidList(pPIDs, &pcPIDs);
+			VMMDLL_PidList(this->HANDLE, pPIDs, &pcPIDs);
 			for (int i = 0; i < pcPIDs; i++)
 			{
 				VMMDLL_PROCESS_INFORMATION ProcessInformation = { 0 };
 				ProcessInformation.magic = VMMDLL_PROCESS_INFORMATION_MAGIC;
 				ProcessInformation.wVersion = VMMDLL_PROCESS_INFORMATION_VERSION;
 				SIZE_T pcbProcessInformation = sizeof(VMMDLL_PROCESS_INFORMATION);
-				VMMDLL_ProcessGetInformation(pPIDs[i], &ProcessInformation, &pcbProcessInformation);
+				VMMDLL_ProcessGetInformation(this->HANDLE, pPIDs[i], &ProcessInformation, &pcbProcessInformation);
 
 
 				if (strcmp(ProcessInformation.szName, "cs2.exe") == 0) {
@@ -84,9 +96,6 @@ public:
 		//hProcess = OpenProcess(PROCESS_ALL_ACCESS | PROCESS_CREATE_THREAD, TRUE, ProcessID);
 		//_is_invalid(hProcess, FAILE_HPROCESS);
 
-		ModuleAddress = GetProcessModuleHandle(ProcessName);
-		_is_invalid(ModuleAddress, FAILE_MODULE);
-
 		Attached = true;
 
 		return SUCCEED;
@@ -101,7 +110,6 @@ public:
 			CloseHandle(hProcess);
 		hProcess = 0;
 		ProcessID = 0;
-		ModuleAddress = 0;
 		Attached = false;
 	}
 
@@ -131,7 +139,7 @@ public:
 	{
 		//_is_invalid(hProcess,false);
 		_is_invalid(ProcessID, false);
-		if (VMMDLL_MemReadEx(ProcessID, Address, (PBYTE)&Value, Size, 0, VMMDLL_FLAG_NOCACHE | VMMDLL_FLAG_NOPAGING | VMMDLL_FLAG_ZEROPAD_ON_FAIL | VMMDLL_FLAG_NOPAGING_IO))
+		if (VMMDLL_MemReadEx(this->HANDLE, ProcessID, Address, (PBYTE)&Value, Size, 0, VMMDLL_FLAG_NOCACHE | VMMDLL_FLAG_NOPAGING | VMMDLL_FLAG_ZEROPAD_ON_FAIL | VMMDLL_FLAG_NOPAGING_IO))
 			return true;
 		return false;
 	}
@@ -142,14 +150,14 @@ public:
 		//_is_invalid(hProcess, false);
 		_is_invalid(ProcessID, false);
 
-		if (VMMDLL_MemReadEx(ProcessID, Address, (PBYTE)&Value, sizeof(ReadType), 0, VMMDLL_FLAG_NOCACHE | VMMDLL_FLAG_NOPAGING | VMMDLL_FLAG_ZEROPAD_ON_FAIL | VMMDLL_FLAG_NOPAGING_IO))
+		if (VMMDLL_MemReadEx(this->HANDLE, ProcessID, Address, (PBYTE)&Value, sizeof(ReadType), 0, VMMDLL_FLAG_NOCACHE | VMMDLL_FLAG_NOPAGING | VMMDLL_FLAG_ZEROPAD_ON_FAIL | VMMDLL_FLAG_NOPAGING_IO))
 			return true;
 		return false;
 	}
 
 	VMMDLL_SCATTER_HANDLE CreateScatterHandle()
 	{
-		return VMMDLL_Scatter_Initialize(ProcessID, VMMDLL_FLAG_NOCACHE);
+		return VMMDLL_Scatter_Initialize(this->HANDLE, ProcessID, VMMDLL_FLAG_NOCACHE);
 	}
 
 	void AddScatterReadRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t address, void* buffer, size_t size)
@@ -175,7 +183,7 @@ public:
 	{
 		//_is_invalid(hProcess, false);
 		_is_invalid(ProcessID, false);
-		if (VMMDLL_MemWrite(ProcessID, Address, (PBYTE)&Value, Size))
+		if (VMMDLL_MemWrite(this->HANDLE, ProcessID, Address, (PBYTE)&Value, Size))
 			return true;
 		return false;
 	}
@@ -186,7 +194,7 @@ public:
 		//_is_invalid(hProcess, false);
 		_is_invalid(ProcessID, false);
 
-		if (VMMDLL_MemWrite(ProcessID, Address, (PBYTE)&Value, sizeof(ReadType)))
+		if (VMMDLL_MemWrite(this->HANDLE, ProcessID, Address, (PBYTE)&Value, sizeof(ReadType)))
 			return true;
 		return false;
 	}
@@ -199,6 +207,8 @@ public:
 	/// <param name="EndAddress">结束地址</param>
 	/// <returns>匹配特征结果</returns>
 	std::vector<DWORD64> SearchMemory(const std::string& Signature, DWORD64 StartAddress, DWORD64 EndAddress, int SearchNum = 1);
+
+
 
 	DWORD64 TraceAddress(DWORD64 BaseAddress, std::vector<DWORD> Offsets)
 	{
@@ -220,13 +230,8 @@ public:
 		return Address == 0 ? 0 : Address + Offsets[Offsets.size() - 1];
 	}
 
-public:
-
-	DWORD64 GetProcessModuleHandle(std::string ModuleName)
-	{
-		return VMMDLL_ProcessGetModuleBaseU(ProcessID, (LPSTR)ModuleName.c_str());
-	}
-
+	
 };
 
 inline ProcessManager ProcessMgr;
+

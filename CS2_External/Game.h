@@ -52,3 +52,6 @@ public:
 
 inline CGame gGame;
 
+DWORD64 GetProcessModuleHandle(VMM_HANDLE HANDLE, DWORD  ProcessID, std::string ModuleName);
+
+

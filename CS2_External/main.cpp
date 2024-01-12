@@ -74,7 +74,7 @@ int main()
 	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(UpdateWeaponNameThreads), NULL, 0, 0);
 	try
 	{
-		Gui.AttachAnotherWindow("Counter-Strike 2", "SDL_app", Cheats::Run);
+		//Gui.AttachAnotherWindow("Counter-Strike 2", "SDL_app", Cheats::Run);
 		char moduleIndox[2];
 		std::cout << "请选择模式: " << std::endl;
 		std::cout << "	[1]单机模式" << std::endl;

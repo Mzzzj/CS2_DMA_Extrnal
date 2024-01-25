@@ -2,43 +2,43 @@
   "client_dll": {
     "data": {
       "dwEntityList": {
-        "value": 24910160,
+        "value": 24962720,
         "comment": null
       },
       "dwForceAttack": {
-        "value": 23863792,
+        "value": 23912064,
         "comment": null
       },
       "dwForceAttack2": {
-        "value": 23864224,
+        "value": 23912208,
         "comment": null
       },
       "dwForceBackward": {
-        "value": 23863648,
+        "value": 23912784,
         "comment": null
       },
       "dwForceCrouch": {
-        "value": 23864368,
+        "value": 23913504,
         "comment": null
       },
       "dwForceForward": {
-        "value": 23863504,
+        "value": 23912640,
         "comment": null
       },
       "dwForceJump": {
-        "value": 23864224,
+        "value": 23913360,
         "comment": null
       },
       "dwForceLeft": {
-        "value": 23863792,
+        "value": 23912928,
         "comment": null
       },
       "dwForceRight": {
-        "value": 23863936,
+        "value": 23913072,
         "comment": null
       },
       "dwGameEntitySystem": {
-        "value": 26137152,
+        "value": 26209744,
         "comment": null
       },
       "dwGameEntitySystem_getHighestEntityIndex": {
@@ -46,39 +46,39 @@
         "comment": null
       },
       "dwGameRules": {
-        "value": 25288776,
+        "value": 25341336,
         "comment": null
       },
       "dwGlobalVars": {
-        "value": 23846072,
+        "value": 23895208,
         "comment": null
       },
       "dwGlowManager": {
-        "value": 25286576,
+        "value": 25339136,
         "comment": null
       },
       "dwInterfaceLinkList": {
-        "value": 26324696,
+        "value": 26397288,
         "comment": null
       },
       "dwLocalPlayerController": {
-        "value": 25235272,
+        "value": 25287832,
         "comment": null
       },
       "dwLocalPlayerPawn": {
-        "value": 23891800,
+        "value": 23940936,
         "comment": null
       },
       "dwPlantedC4": {
-        "value": 25315976,
+        "value": 25368536,
         "comment": null
       },
       "dwPrediction": {
-        "value": 23891488,
+        "value": 23940624,
         "comment": null
       },
       "dwSensitivity": {
-        "value": 25292104,
+        "value": 25344664,
         "comment": null
       },
       "dwSensitivity_sensitivity": {
@@ -86,15 +86,15 @@
         "comment": null
       },
       "dwViewAngles": {
-        "value": 25693632,
+        "value": 25759536,
         "comment": null
       },
       "dwViewMatrix": {
-        "value": 25297232,
+        "value": 25349792,
         "comment": null
       },
       "dwViewRender": {
-        "value": 25299352,
+        "value": 25351912,
         "comment": null
       }
     },

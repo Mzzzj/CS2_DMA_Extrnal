@@ -140,10 +140,10 @@ namespace Render
 		{
 			if (!BoneJoint.IsVisible)
 				continue;
-			Min.x = min(BoneJoint.ScreenPos.x, Min.x);
-			Min.y = min(BoneJoint.ScreenPos.y, Min.y);
-			Max.x = max(BoneJoint.ScreenPos.x, Max.x);
-			Max.y = max(BoneJoint.ScreenPos.y, Max.y);
+			Min.x = std::min(BoneJoint.ScreenPos.x, Min.x);
+			Min.y = std::min(BoneJoint.ScreenPos.y, Min.y);
+			Max.x = std::max(BoneJoint.ScreenPos.x, Max.x);
+			Max.y = std::max(BoneJoint.ScreenPos.y, Max.y);
 		}
 		Size.x = Max.x - Min.x;
 		Size.y = Max.y - Min.y;

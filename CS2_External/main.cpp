@@ -72,6 +72,7 @@ int main()
 	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(ScatterReadThreads), NULL, 0, 0);
 
 	CreateThread(nullptr, 0, (LPTHREAD_START_ROUTINE)(UpdateWeaponNameThreads), NULL, 0, 0);
+	
 	try
 	{
 		//Gui.AttachAnotherWindow("Counter-Strike 2", "SDL_app", Cheats::Run);

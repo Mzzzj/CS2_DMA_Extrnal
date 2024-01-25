@@ -1,5 +1,5 @@
-*.dll
-*.lib
+
 .vs/**
 CS2_External/x64/**
-x64/Release/**
+x64/**
+CS2_External/Release/**

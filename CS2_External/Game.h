@@ -3,7 +3,9 @@
 #include "Utils/ProcessManager.hpp"
 #include "Offsets.h"
 #include "View.hpp"
-
+#include<iostream>
+#include<fstream>
+#include<sstream>
 class CGame
 {
 private:

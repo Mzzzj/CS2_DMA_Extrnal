@@ -1,9 +1,10 @@
 #pragma once
 #include <Windows.h>
 #include "Utils/ProcessManager.hpp"
-#include <json/json.h>
 #include <iostream>
 #include <fstream>
+#include "rapidjson/document.h"
+#include "rapidjson/istreamwrapper.h"
 // From: https://github.com/a2x/cs2-dumper/blob/main/generated/client.dll.hpp
 namespace Offset
 {

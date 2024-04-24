@@ -1,4 +1,9 @@
 # CS2_DMA_Extrnal
+
+此项目不再维护，想要正常运行你需要自己学会更新偏移文件。你可以去这个论坛学习如何自己更新偏移文件，https://www.unknowncheats.me/forum/counter-strike-2-a/576077-counter-strike-2-reversal-structs-offsets.html 我不会教你们，你们需要自己去学习
+
+This project is no longer maintained, and in order to run properly, you need to learn how to update offset files yourself. You can go to this forum to learn how to update offset files yourself, https://www.unknowncheats.me/forum/counter-strike-2-a/576077-counter-strike-2-reversal-structs-offsets.html I won't teach you, you need to learn on your own
+
 基于 [CS2_Extrnal](https://github.com/TKazer/CS2_External)   的DMA版
 
 ![D7V%LV` TSUF4_%WA HI~UI](https://github.com/MoZiHao/CS2_DMA_Extrnal/assets/31085148/eefea6bf-b10d-49b0-8f21-94aac218d841)
